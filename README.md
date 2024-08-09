@@ -46,14 +46,13 @@ Ensure you have the following installed:
 1. **Start the API Server**
 
    - Navigate to the project's root directory if you are not already there:
-     \```bash
+     ```bash
      cd path/to/ecsAPI  # Replace 'path/to/ecsAPI' with the actual path if necessary
-     \```
      
    - Execute the following command to start the server:
-     \```bash
+     ```bash
      uvicorn main:app --host 0.0.0.0 --port 8000
-     \```
+
    - This command starts the FastAPI server, making your API accessible at `http://localhost:8000` from any machine in the network.
 
 2. **Accessing the API Documentation**
@@ -64,8 +63,8 @@ Ensure you have the following installed:
 ### Additional Server Commands
 
 - To run the server in **reload mode** (useful during development as it automatically reloads your application when code changes are detected):
-  \```bash
-  uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-  \```
+   ```bash
+     uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
 
 This section provides the steps to start and interact with the API using Uvicorn, along with accessing its Swagger UI for easy testing and exploration of its capabilities.
