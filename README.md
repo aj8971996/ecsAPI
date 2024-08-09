@@ -29,16 +29,16 @@ Ensure you have the following installed:
 
 2. **Create and Activate a Virtual Enviornment**
     - On Windows
-        '''bash
+        ```bash
         python -m venv venv
         .\venv\Scripts\activate
     - On macOS and Linus
-        '''bash
+        ```bash
         python3 -m venv venv
         source venv/bin/activate
 
 3. **Install Dependencies**
-    '''bash
+    ```bash
     pip install -r requirements.txt
 
 ### Running the API
