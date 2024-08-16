@@ -1,6 +1,6 @@
 # api/reports.py
-from ..database.database import Database
-from ..database.models import Employee, Tool, Material, CheckOut
+from database.database import get_db  # Use absolute import
+from database.models import Employee, Tool, Material, CheckOut
 
 def generate_employee_list(db):
     employees = db.query(Employee).all()
