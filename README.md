@@ -65,6 +65,23 @@ Ensure you have the following installed:
 
    - This command starts the FastAPI server, making your API accessible at `http://localhost:8000` from any machine in the network.
 
+2. **(IF FACING CONNECTION TO DB ISSUES) Test Your Database Connection**
+   - Once MySQL Workbench is installed, you will need to create a local instance to test the connection with
+   - Go into database.py and uncomment the following section
+      ```bash
+      """
+      if __name__ == "__main__":
+         try:
+            get_db()
+            print("Successfully connected to db")
+         except Exception as e:
+            print(f"Unable to get db : {e}")
+      """
+   - Then run the database.py file directly from your IDE to ensure you are connecting to your instance
+   - The message you get should look like this
+      ```bash
+      c:/Users/17025/Desktop/dev_ecsAPI/ecsAPI/database/database.py
+      Successfully connected to db
 - To run the server in **reload mode** (useful during development as it automatically reloads your application when code changes are detected):
    ```bash
      uvicorn main:app --host 0.0.0.0 --port 8000 --reload

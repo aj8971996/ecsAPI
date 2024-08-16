@@ -15,9 +15,12 @@ def get_db():
     finally:
         db.close()
 
+#! UNCOMMENT THIS TO TEST IF YOU CAN CONNECT TO DB
+"""
 if __name__ == "__main__":
     try:
         get_db()
         print("Successfully connected to db")
     except Exception as e:
         print(f"Unable to get db : {e}")
+"""
