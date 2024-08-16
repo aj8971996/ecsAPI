@@ -1,24 +1,23 @@
+# database/database.py
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session
-from .models import Base
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-# Create the engine with the appropriate database URL
-engine = create_engine('sqlite:///employee_checkout.db', echo=True)  # Adjust the URL as necessary
+DATABASE_URL = "mysql+mysqlconnector://ecs_api_user:password@localhost/ecs_api"
 
-# Create all tables in the database from the defined models
-Base.metadata.create_all(engine)
-
-# Create a sessionmaker bound to this engine
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
 
-class Database:
-    @staticmethod
-    def get_db():
-        """Yield database sessions, ensuring they are closed after use."""
-        db = SessionLocal()
-        try:
-            yield db
-        finally:
-            db.close()
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+if __name__ == "__main__":
+    try:
+        get_db()
+        print("Successfully connected to db")
+    except Exception as e:
+        print(f"Unable to get db : {e}")

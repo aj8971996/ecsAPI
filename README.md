@@ -18,13 +18,23 @@ This repository contains the backend implementation of the ecsAPI, an Employee C
 Ensure you have the following installed:
 - Python 3.8 or higher
 - pip (Python package installer)
+### MySQL Setup
+1. **Ensure MySQL Is Installed**
+   
+   Navigate to the MySQL Community Installer Page, ensure to install the connection tools AND a server instance
 
+   https://dev.mysql.com/downloads/
+
+   Recommended Downloads
+   - MySQL Workbench
+   - MySQL Community Server
+   - Your relevant Connector(s)
 ### Environment Setup
 
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/ecsAPI.git
+   git clone https://github.com/aj8971996/ecsAPI.git
    cd ecsAPI
 
 2. **Create and Activate a Virtual Enviornment**
@@ -47,20 +57,13 @@ Ensure you have the following installed:
 
    - Navigate to the project's root directory if you are not already there:
      ```bash
-     cd path/to/ecsAPI  # Replace 'path/to/ecsAPI' with the actual path if necessary
+     cd path/to/ecsAPI  # Replace 'path/to/ecsAPI' with the actual path in your local machine
      
    - Execute the following command to start the server:
      ```bash
      uvicorn main:app --host 0.0.0.0 --port 8000
 
    - This command starts the FastAPI server, making your API accessible at `http://localhost:8000` from any machine in the network.
-
-2. **Accessing the API Documentation**
-
-   - Once the server is running, open a web browser.
-   - Visit `http://localhost:8000/docs` to view the Swagger UI. This page provides interactive API documentation, where you can test the API endpoints directly from your browser.
-
-### Additional Server Commands
 
 - To run the server in **reload mode** (useful during development as it automatically reloads your application when code changes are detected):
    ```bash
