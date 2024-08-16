@@ -1,6 +1,7 @@
 # database/database.py
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+from models import Employee, Tool, Material, CheckIn, CheckOut, ItemInventory, Transactions
 
 DATABASE_URL = "mysql+mysqlconnector://ecs_api_user:password@localhost/ecs_api"
 
@@ -14,6 +15,11 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# Function to create tables
+def create_tables():
+    Base.metadata.create_all(bind=engine)
+    print("Tables created successfully")
 
 #! UNCOMMENT THIS TO TEST IF YOU CAN CONNECT TO DB
 """
