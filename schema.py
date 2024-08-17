@@ -20,8 +20,8 @@ class ToolSchema(BaseModel):
     tool_type: Optional[str] = None
     tool_added_to_inventory_date: date
     tool_cost: Optional[float] = None
-    tool_count: int
     tool_out_of_stock_indicator: bool
+    tool_lost_indicator: bool
 
     class Config:
         orm_mode = True
@@ -32,8 +32,8 @@ class MaterialSchema(BaseModel):
     material_type: Optional[str] = None
     material_added_to_inventory_date: date
     material_cost: Optional[float] = None
-    material_count: int
     material_out_of_stock_indicator: bool
+    material_lost_indicator: bool
 
     class Config:
         orm_mode = True
@@ -56,6 +56,7 @@ class InventorySchema(BaseModel):
     item_type: str
     item_stock: int
     item_out_of_stock_indicator: bool
+    item_lost_indicator: bool
 
     class Config:
         orm_mode = True

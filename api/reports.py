@@ -2,6 +2,8 @@
 from database.database import get_db  # Use absolute import
 from database.models import Employee, Tool, Material, CheckOut
 
+
+# Edit to adjust for obtaining counts
 def generate_employee_list(db):
     employees = db.query(Employee).all()
     return employees

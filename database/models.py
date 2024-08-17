@@ -31,7 +31,7 @@ class Tool(Base):
     tool_type = Column(String(50))  # Specify length for VARCHAR
     tool_added_to_inventory_date = Column(Date)
     tool_cost = Column(Float)
-    tool_count = Column(Integer)
+    tool_lost_indicator = Column(Boolean, default=False)
     tool_out_of_stock_indicator = Column(Boolean, default=False)
     
     # Relationships
@@ -47,7 +47,6 @@ class Material(Base):
     material_type = Column(String(50))  # Specify length for VARCHAR
     material_added_to_inventory_date = Column(Date)
     material_cost = Column(Float)
-    material_count = Column(Integer)
     material_metric = Column(String(50))  # Specify length for VARCHAR
     material_out_of_stock_indicator = Column(Boolean, default=False)
     
@@ -92,7 +91,10 @@ class ItemInventory(Base):
     item_id = Column(Integer, primary_key=True)  # This equates to either the material_id or the tool_id
     item_type = Column(String(50), nullable=False)  # 'tool' or 'material' - Specify length for VARCHAR
     item_stock = Column(Integer)
+    # This will come from the COUNT(DISTINCT tool_id)
+    item_count = Column(Integer)
     item_out_of_stock_indicator = Column(Boolean)
+    item_lost_indicator = Column(Boolean)
 
 
 # Transactions Table (Front End Table)
