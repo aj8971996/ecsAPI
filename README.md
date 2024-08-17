@@ -29,6 +29,21 @@ Ensure you have the following installed:
    - MySQL Workbench
    - MySQL Community Server
    - Your relevant Connector(s)
+2. **Ensure ECS API User is Created**
+
+   The connection to the API requires that the ECS API user is created and privlages are granted.
+
+   Please follow these steps:
+   1. *Creaet the User*
+      ```bash
+      CREATE USER 'ecs_api_user'@'localhost' IDENTIFIED BY 'password';
+   2. *Grant the Privlages*
+      ```bash
+      GRANT ALL PRIVILEGES ON ecs_api.*TO'ecs_api_user'@'localhost';
+   3. *Commit the Change*
+      ```bash
+      FLUSH PRIVILEGES;
+
 ### Environment Setup
 
 1. **Clone the Repository**
