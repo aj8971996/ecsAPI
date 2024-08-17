@@ -41,7 +41,7 @@ Ensure you have the following installed:
       ```bash
       CREATE USER 'ecs_api_user'@'localhost' IDENTIFIED BY 'password';
       ```
-   2. *Grant the Privlages*
+   2. *Grant the Privileges*
       ```bash
       GRANT ALL PRIVILEGES ON ecs_api.*TO'ecs_api_user'@'localhost';
       ```
