@@ -1,4 +1,3 @@
-# schemas.py
 from pydantic import BaseModel
 from datetime import date, datetime
 from typing import Optional, List
@@ -10,6 +9,8 @@ class EmployeeSchema(BaseModel):
     emp_job_title: Optional[str] = None
     emp_start_date: date
     emp_checkout_indicator: bool
+    emp_user_anem: str  # Add this field
+    emp_password: str  # Add this field
 
     class Config:
         orm_mode = True
@@ -21,7 +22,7 @@ class ToolSchema(BaseModel):
     tool_added_to_inventory_date: date
     tool_cost: Optional[float] = None
     tool_out_of_stock_indicator: bool
-    tool_lost_indicator: bool
+    tool_lost_indicator: bool  # Add this field
 
     class Config:
         orm_mode = True
@@ -33,7 +34,7 @@ class MaterialSchema(BaseModel):
     material_added_to_inventory_date: date
     material_cost: Optional[float] = None
     material_out_of_stock_indicator: bool
-    material_lost_indicator: bool
+    material_lost_indicator: bool  # Add this field
 
     class Config:
         orm_mode = True
@@ -55,8 +56,9 @@ class InventorySchema(BaseModel):
     item_id: int
     item_type: str
     item_stock: int
+    item_count: int  # Add this field to match the new schema
     item_out_of_stock_indicator: bool
-    item_lost_indicator: bool
+    item_lost_indicator: bool  # Add this field
 
     class Config:
         orm_mode = True
