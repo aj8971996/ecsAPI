@@ -15,6 +15,8 @@ class Employee(Base):
     emp_job_title = Column(String(100))  # Specify length for VARCHAR
     emp_start_date = Column(Date)
     emp_checkout_indicator = Column(Boolean, default=False)
+    emp_user_anem = Column(String(50), nullable=False)
+    emp_password = Column(String(50), nullable=False)
     
     # Relationships
     checkouts = relationship('CheckOut', back_populates='employee')
