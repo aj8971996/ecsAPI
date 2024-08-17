@@ -8,8 +8,7 @@ This repository contains the backend implementation of the ecsAPI, an Employee C
 
 ### Note
 
-- The API is currently set up for development and testing purposes. It does not have a live server setup for running locally, nor does it include example data.
-- The database and server configurations are set up for local development. To test the API, you will need to run it on a local server.
+- The API is currently set up for development and testing purposes. It does not have a live server setup and is intended to run locally. Additionally, no example data is included.
 
 ## Setup Instructions
 
@@ -18,10 +17,13 @@ This repository contains the backend implementation of the ecsAPI, an Employee C
 Ensure you have the following installed:
 - Python 3.8 or higher
 - pip (Python package installer)
+- MySQL
+
 ### MySQL Setup
 1. **Ensure MySQL Is Installed**
    
-   Navigate to the MySQL Community Installer Page, ensure to install the connection tools AND a server instance
+   Navigate to the MySQL Community Installer Page and install the connection tools along with a server instance.
+
 
    https://dev.mysql.com/downloads/
 
@@ -29,20 +31,24 @@ Ensure you have the following installed:
    - MySQL Workbench
    - MySQL Community Server
    - Your relevant Connector(s)
+
 2. **Ensure ECS API User is Created**
 
-   The connection to the API requires that the ECS API user is created and privlages are granted.
+   The connection to the API requires that the ECS API user is created and privileges are granted.
 
    Please follow these steps:
    1. *Creaet the User*
       ```bash
       CREATE USER 'ecs_api_user'@'localhost' IDENTIFIED BY 'password';
+      ```
    2. *Grant the Privlages*
       ```bash
       GRANT ALL PRIVILEGES ON ecs_api.*TO'ecs_api_user'@'localhost';
+      ```
    3. *Commit the Change*
       ```bash
       FLUSH PRIVILEGES;
+      ```
 
 ### Environment Setup
 
@@ -51,20 +57,24 @@ Ensure you have the following installed:
    ```bash
    git clone https://github.com/aj8971996/ecsAPI.git
    cd ecsAPI
+   ```
 
 2. **Create and Activate a Virtual Enviornment**
     - On Windows
         ```bash
         python -m venv venv
         .\venv\Scripts\activate
+        ```
     - On macOS and Linus
         ```bash
         python3 -m venv venv
         source venv/bin/activate
+        ```
 
 3. **Install Dependencies**
     ```bash
     pip install -r requirements.txt
+    ```
 
 ### Running the API
 
@@ -73,10 +83,12 @@ Ensure you have the following installed:
    - Navigate to the project's root directory if you are not already there:
      ```bash
      cd path/to/ecsAPI  # Replace 'path/to/ecsAPI' with the actual path in your local machine
+     ```
      
    - Execute the following command to start the server:
      ```bash
      uvicorn main:app --host 0.0.0.0 --port 8000
+     ```
 
    - This command starts the FastAPI server, making your API accessible at `http://localhost:8000` from any machine in the network.
 
@@ -92,14 +104,98 @@ Ensure you have the following installed:
          except Exception as e:
             print(f"Unable to get db : {e}")
       """
+      ```
    - Then run the database.py file directly from your IDE to ensure you are connecting to your instance
    - The message you get should look like this
       ```bash
-      c:/Users/17025/Desktop/dev_ecsAPI/ecsAPI/database/database.py
       Successfully connected to db
-- To run the server in **reload mode** (useful during development as it automatically reloads your application when code changes are detected):
-   ```bash
-     uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-
+      ```
 
 This section provides the steps to start and interact with the API using Uvicorn, along with accessing its Swagger UI for easy testing and exploration of its capabilities.
+
+### API Client Usage
+   The apiClient.java class provides several methods to interact with the backend API. Below are the available methods:
+
+### Validate Employee Login
+   ```java
+   String loginResponse = apiClient.validateEmployeeLogin("johndoe", "password123");
+   System.out.println("Login Response: " + loginResponse);
+   ```
+
+### Retrieve Employees
+   ```java
+   String employees = apiClient.getEmployees();
+   System.out.println("Employees: " + employees);
+   ```
+
+### Retrieve Inventory
+   ```java
+   String inventory = apiClient.getInventory();
+   System.out.println("Inventory: " + inventory);
+   ```
+
+### Retrieve Open Transactions
+   ```java
+   String openTransactions = apiClient.getOpenTransactions();
+   System.out.println("Open Transactions: " + openTransactions);
+   ```
+
+### Check Out Tool
+   ```java
+   String checkOutResponse = apiClient.checkOutTool(1, 2);  // Example employee ID and tool ID
+   System.out.println("Check Out Response: " + checkOutResponse);
+   ```
+
+### Check In Tool
+   ```java
+   String checkInResponse = apiClient.checkInTool(1, 2);  // Example employee ID and tool ID
+   System.out.println("Check In Response: " + checkInResponse);
+   ```
+
+### Retrieve Active Checkouts
+   ```java
+   String activeCheckouts = apiClient.getActiveCheckouts();
+   System.out.println("Active Checkouts: " + activeCheckouts);
+   ```
+
+### Retrieve Active Lost Items
+   ```java
+   String activeLostItems = apiClient.getActiveLostItems();
+   System.out.println("Active Lost Items: " + activeLostItems);
+   ```
+
+### Example Usage for Main method in Java
+```java
+public static void main(String[] args) {
+    try {
+        ApiClient apiClient = new ApiClient();
+        String employees = apiClient.getEmployees();
+        System.out.println("Employees: " + employees);
+
+        // Example usage
+        String loginResponse = apiClient.validateEmployeeLogin("johndoe", "password123");
+        System.out.println("Login Response: " + loginResponse);
+
+        String inventory = apiClient.getInventory();
+        System.out.println("Inventory: " + inventory);
+
+        String openTransactions = apiClient.getOpenTransactions();
+        System.out.println("Open Transactions: " + openTransactions);
+
+        String checkOutResponse = apiClient.checkOutTool(1, 2);  // Example employee ID and tool ID
+        System.out.println("Check Out Response: " + checkOutResponse);
+
+        String checkInResponse = apiClient.checkInTool(1, 2);  // Example employee ID and tool ID
+        System.out.println("Check In Response: " + checkInResponse);
+
+        String activeCheckouts = apiClient.getActiveCheckouts();
+        System.out.println("Active Checkouts: " + activeCheckouts);
+
+        String activeLostItems = apiClient.getActiveLostItems();
+        System.out.println("Active Lost Items: " + activeLostItems);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+```
