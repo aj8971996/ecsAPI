@@ -9,7 +9,7 @@ class EmployeeSchema(BaseModel):
     emp_job_title: Optional[str] = None
     emp_start_date: date
     emp_checkout_indicator: bool
-    emp_user_anem: str  # Add this field
+    emp_user_name: str  # Add this field
     emp_password: str  # Add this field
 
     class Config:
