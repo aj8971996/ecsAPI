@@ -8,7 +8,9 @@ This repository contains the backend implementation of the ecsAPI, an Employee C
 
 ### Note
 
-- The API is currently set up for development and testing purposes. It does not have a live server setup and is intended to run locally. Additionally, no example data is included.
+- The API is currently set up for development and testing purposes. It does not have a live server setup and is intended to run locally.
+- Sample data is now included within the `sampleDataSeeder.py` class located within the `sample_data` subfolder.
+   - The sample data is inserted into the tables upon table creation.
 
 ## Setup Instructions
 
