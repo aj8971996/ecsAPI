@@ -39,13 +39,13 @@ Ensure you have the following installed:
    The connection to the API requires that the ECS API user is created and privileges are granted.
 
    Please follow these steps:
-   1. *Creaet the User*
+   1. *Create the User*
       ```bash
       CREATE USER 'ecs_api_user'@'localhost' IDENTIFIED BY 'password';
       ```
    2. *Grant the Privileges*
       ```bash
-      GRANT ALL PRIVILEGES ON ecs_api.*TO'ecs_api_user'@'localhost';
+      GRANT ALL PRIVILEGES ON ecs_api.* TO 'ecs_api_user'@'localhost';
       ```
    3. *Commit the Change*
       ```bash
@@ -142,16 +142,22 @@ This section provides the steps to start and interact with the API using Uvicorn
    System.out.println("Open Transactions: " + openTransactions);
    ```
 
-### Check Out Tool
+### Check Out Tool or Material
    ```java
-   String checkOutResponse = apiClient.checkOutTool(1, 2);  // Example employee ID and tool ID
-   System.out.println("Check Out Response: " + checkOutResponse);
+   String checkOutToolResponse = apiClient.checkOutItem(1, 2, null, 0);  // Check out tool (employeeId: 1, toolId: 2)
+   System.out.println("Check Out Tool Response: " + checkOutToolResponse);
+
+   String checkOutMaterialResponse = apiClient.checkOutItem(1, null, 3, 10);  // Check out material (employeeId: 1, materialId: 3, quantity: 10)
+   System.out.println("Check Out Material Response: " + checkOutMaterialResponse);
    ```
 
-### Check In Tool
+### Check In Tool or Material
    ```java
-   String checkInResponse = apiClient.checkInTool(1, 2);  // Example employee ID and tool ID
-   System.out.println("Check In Response: " + checkInResponse);
+   String checkInToolResponse = apiClient.checkInItem(1, 2, null, 0);  // Check in tool (employeeId: 1, toolId: 2)
+   System.out.println("Check In Tool Response: " + checkInToolResponse);
+
+   String checkInMaterialResponse = apiClient.checkInItem(1, null, 3, 10);  // Hypothetical return of material (employeeId: 1, materialId: 3, quantity: 10)
+   System.out.println("Check In Material Response: " + checkInMaterialResponse);
    ```
 
 ### Retrieve Active Checkouts
@@ -171,33 +177,32 @@ This section provides the steps to start and interact with the API using Uvicorn
 public static void main(String[] args) {
     try {
         ApiClient apiClient = new ApiClient();
-        String employees = apiClient.getEmployees();
-        System.out.println("Employees: " + employees);
 
         // Example usage
         String loginResponse = apiClient.validateEmployeeLogin("johndoe", "password123");
         System.out.println("Login Response: " + loginResponse);
 
-        String inventory = apiClient.getInventory();
-        System.out.println("Inventory: " + inventory);
+        String checkOutToolResponse = apiClient.checkOutItem(1, 2, null, 0);  // Check out tool (employeeId: 1, toolId: 2)
+        System.out.println("Check Out Tool Response: " + checkOutToolResponse);
 
-        String openTransactions = apiClient.getOpenTransactions();
-        System.out.println("Open Transactions: " + openTransactions);
+        String checkOutMaterialResponse = apiClient.checkOutItem(1, null, 3, 10);  // Check out material (employeeId: 1, materialId: 3, quantity: 10)
+        System.out.println("Check Out Material Response: " + checkOutMaterialResponse);
 
-        String checkOutResponse = apiClient.checkOutTool(1, 2);  // Example employee ID and tool ID
-        System.out.println("Check Out Response: " + checkOutResponse);
+        String checkInToolResponse = apiClient.checkInItem(1, 2, null, 0);  // Check in tool (employeeId: 1, toolId: 2)
+        System.out.println("Check In Tool Response: " + checkInToolResponse);
 
-        String checkInResponse = apiClient.checkInTool(1, 2);  // Example employee ID and tool ID
-        System.out.println("Check In Response: " + checkInResponse);
+        String checkInMaterialResponse = apiClient.checkInItem(1, null, 3, 10);  // Hypothetical return of material (employeeId: 1, materialId: 3, quantity: 10)
+        System.out.println("Check In Material Response: " + checkInMaterialResponse);
 
         String activeCheckouts = apiClient.getActiveCheckouts();
         System.out.println("Active Checkouts: " + activeCheckouts);
 
-        String activeLostItems = apiClient.getActiveLostItems();
+        String activeLostItems = apiClient.getLostTools();
         System.out.println("Active Lost Items: " + activeLostItems);
 
     } catch (Exception e) {
         e.printStackTrace();
     }
 }
+
 ```

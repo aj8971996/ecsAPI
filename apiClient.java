@@ -9,35 +9,41 @@ public class ApiClient {
     private static final String BASE_URL = "http://localhost:8000";  // Replace with your FastAPI server URL
 
     public String validateEmployeeLogin(String username, String password) throws Exception {
-        String endpoint = BASE_URL + "/validate-login";
+        String endpoint = BASE_URL + "/login";
         String jsonInputString = "{\"username\": \"" + username + "\", \"password\": \"" + password + "\"}";
         return postResponse(endpoint, jsonInputString);
     }
 
-    public String getInventory() throws Exception {
-        String endpoint = BASE_URL + "/inventory";
+    public String checkOutItem(int employeeId, Integer toolId, Integer materialId, int quantity) throws Exception {
+        String endpoint = BASE_URL + "/checkout";
+        String jsonInputString = "{\"employee_id\": " + employeeId + 
+                                (toolId != null ? ", \"tool_id\": " + toolId : "") + 
+                                (materialId != null ? ", \"material_id\": " + materialId + ", \"quantity\": " + quantity : "") + 
+                                "}";
+        return postResponse(endpoint, jsonInputString);
+    }
+
+    public String checkInItem(int employeeId, Integer toolId, Integer materialId, int quantity) throws Exception {
+        String endpoint = BASE_URL + "/checkin";
+        String jsonInputString = "{\"employee_id\": " + employeeId + 
+                                (toolId != null ? ", \"tool_id\": " + toolId : "") + 
+                                (materialId != null ? ", \"material_id\": " + materialId + ", \"quantity\": " + quantity : "") + 
+                                "}";
+        return postResponse(endpoint, jsonInputString);
+    }
+
+    public String getOutOfStockMaterials() throws Exception {
+        String endpoint = BASE_URL + "/materials/out-of-stock";
         return getResponse(endpoint);
     }
 
-    public String checkOutTool(int employeeId, int toolId) throws Exception {
-        String endpoint = BASE_URL + "/check-out";
-        String jsonInputString = "{\"employee_id\": " + employeeId + ", \"tool_id\": " + toolId + "}";
-        return postResponse(endpoint, jsonInputString);
-    }
-
-    public String checkInTool(int employeeId, int toolId) throws Exception {
-        String endpoint = BASE_URL + "/check-in";
-        String jsonInputString = "{\"employee_id\": " + employeeId + ", \"tool_id\": " + toolId + "}";
-        return postResponse(endpoint, jsonInputString);
+    public String getLostTools() throws Exception {
+        String endpoint = BASE_URL + "/tools/lost";
+        return getResponse(endpoint);
     }
 
     public String getActiveCheckouts() throws Exception {
-        String endpoint = BASE_URL + "/active-checkouts";
-        return getResponse(endpoint);
-    }
-
-    public String getActiveLostItems() throws Exception {
-        String endpoint = BASE_URL + "/active-lost-items";
+        String endpoint = BASE_URL + "/checkouts/active";
         return getResponse(endpoint);
     }
 
@@ -100,20 +106,26 @@ public class ApiClient {
             String loginResponse = apiClient.validateEmployeeLogin("johndoe", "password123");
             System.out.println("Login Response: " + loginResponse);
 
-            String inventory = apiClient.getInventory();
-            System.out.println("Inventory: " + inventory);
+            String checkOutToolResponse = apiClient.checkOutItem(1, 2, null, 0);  // Check out tool (employeeId: 1, toolId: 2)
+            System.out.println("Check Out Tool Response: " + checkOutToolResponse);
 
-            String checkOutResponse = apiClient.checkOutTool(1, 2);  // Example employee ID and tool ID
-            System.out.println("Check Out Response: " + checkOutResponse);
+            String checkOutMaterialResponse = apiClient.checkOutItem(1, null, 3, 10);  // Check out material (employeeId: 1, materialId: 3, quantity: 10)
+            System.out.println("Check Out Material Response: " + checkOutMaterialResponse);
 
-            String checkInResponse = apiClient.checkInTool(1, 2);  // Example employee ID and tool ID
-            System.out.println("Check In Response: " + checkInResponse);
+            String checkInToolResponse = apiClient.checkInItem(1, 2, null, 0);  // Check in tool (employeeId: 1, toolId: 2)
+            System.out.println("Check In Tool Response: " + checkInToolResponse);
+
+            String checkInMaterialResponse = apiClient.checkInItem(1, null, 3, 10);  // Hypothetical return of material (employeeId: 1, materialId: 3, quantity: 10)
+            System.out.println("Check In Material Response: " + checkInMaterialResponse);
+
+            String outOfStockMaterials = apiClient.getOutOfStockMaterials();
+            System.out.println("Out of Stock Materials: " + outOfStockMaterials);
+
+            String lostTools = apiClient.getLostTools();
+            System.out.println("Lost Tools: " + lostTools);
 
             String activeCheckouts = apiClient.getActiveCheckouts();
             System.out.println("Active Checkouts: " + activeCheckouts);
-
-            String activeLostItems = apiClient.getActiveLostItems();
-            System.out.println("Active Lost Items: " + activeLostItems);
 
         } catch (Exception e) {
             e.printStackTrace();
