@@ -1,7 +1,6 @@
-# database/sample_data_seeder.py
 import datetime
 from sqlalchemy.orm import Session
-from database.models import Employee, Tool, Material, CheckOut, CheckIn
+from database.models import Employee, Tool, Material
 
 class SampleDataSeeder:
     def __init__(self, db: Session):
@@ -89,6 +88,8 @@ class SampleDataSeeder:
                 material_type="Building Material",
                 material_added_to_inventory_date=datetime.date(2022, 1, 25),
                 material_cost=5.0,
+                material_metric="Piece",
+                material_quantity_available=100,
                 material_out_of_stock_indicator=False
             ),
             Material(
@@ -96,6 +97,8 @@ class SampleDataSeeder:
                 material_type="Fastener",
                 material_added_to_inventory_date=datetime.date(2022, 2, 18),
                 material_cost=0.02,
+                material_metric="Count",
+                material_quantity_available=10000,
                 material_out_of_stock_indicator=False
             ),
             Material(
@@ -103,6 +106,8 @@ class SampleDataSeeder:
                 material_type="Electrical",
                 material_added_to_inventory_date=datetime.date(2022, 3, 20),
                 material_cost=1.5,
+                material_metric="Meter",
+                material_quantity_available=500,
                 material_out_of_stock_indicator=False
             ),
         ]
