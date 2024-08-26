@@ -158,3 +158,13 @@ def get_inventory(db: Session):
 
     # Return the combined inventory
     return inventory
+
+# 8. Mark Tool as Lost
+def mark_tool_as_lost(db: Session, tool_id: int):
+    tool = db.query(Tool).filter(Tool.tool_id == tool_id).first()
+    if not tool:
+        raise HTTPException(status_code=404, detail="Tool not found")
+    
+    tool.tool_lost_indicator = True  # Set the lost indicator to True
+    db.commit()
+    return {"message": "Tool marked as lost"}

@@ -42,6 +42,10 @@ public class ApiClient {
      * 7. GET /inventory
      *    - Function: getInventory
      *    - Description: Retrieves the full inventory of tools and materials.
+     * 
+     * 8. POST /tools/lost/{tool_id}
+     *    - Function: reportLostTool
+     *    - Description: Reports a checked-out tool as lost.
      */
 
     public String loginEmployee(String username, String password) throws Exception {
@@ -120,6 +124,17 @@ public class ApiClient {
 
     public Map<String, Object> getInventoryParsed() throws Exception {
         String jsonResponse = getInventory();
+        return parseJsonResponse(jsonResponse);
+    }
+
+    // New function to report a lost tool
+    public String reportLostTool(int toolId) throws Exception {
+        String endpoint = BASE_URL + "/tools/lost/" + toolId;
+        return postResponse(endpoint, "");
+    }
+
+    public Map<String, Object> reportLostToolParsed(int toolId) throws Exception {
+        String jsonResponse = reportLostTool(toolId);
         return parseJsonResponse(jsonResponse);
     }
 
