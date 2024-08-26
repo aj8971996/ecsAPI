@@ -134,3 +134,27 @@ def get_lost_tools(db: Session):
 def get_active_checkouts(db: Session):
     active_checkouts = db.query(CheckOut).filter(CheckOut.check_out_date != None).all()
     return active_checkouts
+
+# 7. Get Inventory
+def get_inventory(db: Session):
+    # Retrieve all tools with their details
+    tools = db.query(
+        Tool.tool_id.label("inventory_id"),
+        Tool.tool_name.label("item_name"),
+        Tool.tool_type.label("item_description"),
+        None.label("current_stock")
+    ).all()
+
+    # Retrieve all materials with their details
+    materials = db.query(
+        Material.material_id.label("inventory_id"),
+        Material.material_name.label("item_name"),
+        Material.material_type.label("item_description"),
+        Material.material_quantity_available.label("current_stock")
+    ).all()
+
+    # Combine tools and materials into a single list
+    inventory = tools + materials
+
+    # Return the combined inventory
+    return inventory

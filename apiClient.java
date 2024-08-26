@@ -12,18 +12,50 @@ public class ApiClient {
 
     private static final String BASE_URL = "http://localhost:8000";  // Replace with your FastAPI server URL
 
-    public String validateEmployeeLogin(String username, String password) throws Exception {
+    /**
+     * Available Endpoints:
+     * 
+     * 1. POST /login
+     *    - Function: loginEmployee
+     *    - Description: Validates employee login credentials.
+     * 
+     * 2. POST /checkout
+     *    - Function: checkoutItem
+     *    - Description: Checks out a tool or material for an employee.
+     * 
+     * 3. POST /checkin
+     *    - Function: checkinItem
+     *    - Description: Checks in a tool or material for an employee.
+     * 
+     * 4. GET /materials/out-of-stock
+     *    - Function: getOutOfStockMaterials
+     *    - Description: Retrieves all out-of-stock materials.
+     * 
+     * 5. GET /tools/lost
+     *    - Function: getLostTools
+     *    - Description: Retrieves all lost tools.
+     * 
+     * 6. GET /checkouts/active
+     *    - Function: getActiveCheckouts
+     *    - Description: Retrieves all active checkouts.
+     * 
+     * 7. GET /inventory
+     *    - Function: getInventory
+     *    - Description: Retrieves the full inventory of tools and materials.
+     */
+
+    public String loginEmployee(String username, String password) throws Exception {
         String endpoint = BASE_URL + "/login";
         String jsonInputString = "{\"username\": \"" + username + "\", \"password\": \"" + password + "\"}";
         return postResponse(endpoint, jsonInputString);
     }
 
-    public Map<String, Object> validateEmployeeLoginParsed(String username, String password) throws Exception {
-        String jsonResponse = validateEmployeeLogin(username, password);
+    public Map<String, Object> loginEmployeeParsed(String username, String password) throws Exception {
+        String jsonResponse = loginEmployee(username, password);
         return parseJsonResponse(jsonResponse);
     }
 
-    public String checkOutItem(int employeeId, Integer toolId, Integer materialId, int quantity) throws Exception {
+    public String checkoutItem(int employeeId, Integer toolId, Integer materialId, int quantity) throws Exception {
         String endpoint = BASE_URL + "/checkout";
         String jsonInputString = "{\"employee_id\": " + employeeId +
                                 (toolId != null ? ", \"tool_id\": " + toolId : "") +
@@ -32,12 +64,12 @@ public class ApiClient {
         return postResponse(endpoint, jsonInputString);
     }
 
-    public Map<String, Object> checkOutItemParsed(int employeeId, Integer toolId, Integer materialId, int quantity) throws Exception {
-        String jsonResponse = checkOutItem(employeeId, toolId, materialId, quantity);
+    public Map<String, Object> checkoutItemParsed(int employeeId, Integer toolId, Integer materialId, int quantity) throws Exception {
+        String jsonResponse = checkoutItem(employeeId, toolId, materialId, quantity);
         return parseJsonResponse(jsonResponse);
     }
 
-    public String checkInItem(int employeeId, Integer toolId, Integer materialId, int quantity) throws Exception {
+    public String checkinItem(int employeeId, Integer toolId, Integer materialId, int quantity) throws Exception {
         String endpoint = BASE_URL + "/checkin";
         String jsonInputString = "{\"employee_id\": " + employeeId +
                                 (toolId != null ? ", \"tool_id\": " + toolId : "") +
@@ -46,8 +78,8 @@ public class ApiClient {
         return postResponse(endpoint, jsonInputString);
     }
 
-    public Map<String, Object> checkInItemParsed(int employeeId, Integer toolId, Integer materialId, int quantity) throws Exception {
-        String jsonResponse = checkInItem(employeeId, toolId, materialId, quantity);
+    public Map<String, Object> checkinItemParsed(int employeeId, Integer toolId, Integer materialId, int quantity) throws Exception {
+        String jsonResponse = checkinItem(employeeId, toolId, materialId, quantity);
         return parseJsonResponse(jsonResponse);
     }
 
@@ -78,6 +110,16 @@ public class ApiClient {
 
     public Map<String, Object> getActiveCheckoutsParsed() throws Exception {
         String jsonResponse = getActiveCheckouts();
+        return parseJsonResponse(jsonResponse);
+    }
+
+    public String getInventory() throws Exception {
+        String endpoint = BASE_URL + "/inventory";
+        return getResponse(endpoint);
+    }
+
+    public Map<String, Object> getInventoryParsed() throws Exception {
+        String jsonResponse = getInventory();
         return parseJsonResponse(jsonResponse);
     }
 

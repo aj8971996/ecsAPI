@@ -5,7 +5,7 @@ from schema import EmployeeSchema, ToolSchema, MaterialSchema, TransactionSchema
 from typing import List
 from api.reports import (
     validate_employee_login, check_out_item, check_in_item,
-    get_out_of_stock_materials, get_lost_tools, get_active_checkouts
+    get_out_of_stock_materials, get_lost_tools, get_active_checkouts, get_inventory
 )
 
 app = FastAPI()
@@ -61,5 +61,13 @@ async def get_lost_tools_endpoint(db: Session = Depends(get_db)):
 async def get_active_checkouts_endpoint(db: Session = Depends(get_db)):
     try:
         return get_active_checkouts(db)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Endpoint to get the full inventory
+@app.get("/inventory", response_model=List[InventorySchema])
+async def get_inventory_endpoint(db: Session = Depends(get_db)):
+    try:
+        return get_inventory(db)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
