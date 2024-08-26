@@ -5,6 +5,7 @@ README.md
 ## Overview
 
 This repository contains the backend implementation of the ecsAPI, an Employee Checkout System designed for a 400-level college class. The API manages and tracks employee tool and material checkouts.
+- The API now includes logic to check if the tables exist and if they contain data. If tables do not exist, they will be created and seeded with sample data. If the tables exist but are empty, only the data will be seeded. If both tables and data exist, the API will inform that it is running correctly.
 
 ### Note
 
@@ -204,5 +205,6 @@ public static void main(String[] args) {
         e.printStackTrace();
     }
 }
+
 
 ```

@@ -1,9 +1,7 @@
-# database/models.py (Using SQLAlchemy as ORM)
 import datetime
 from sqlalchemy import Column, Integer, String, ForeignKey, Date, Boolean, Float, DateTime
 from sqlalchemy.orm import declarative_base, relationship
 
-# Define the Base here
 Base = declarative_base()
 
 # Employee Table (Source Table for item_transactions / Front End Table)
@@ -15,7 +13,7 @@ class Employee(Base):
     emp_job_title = Column(String(100))  # Job title of the employee
     emp_start_date = Column(Date)  # Start date of the employee's tenure
     emp_checkout_indicator = Column(Boolean, default=False)  # Indicates if the employee has an active checkout
-    emp_user_anem = Column(String(50), nullable=False)  # Username for employee login
+    emp_user_name = Column(String(50), nullable=False)  # Username for employee login
     emp_password = Column(String(50), nullable=False)  # Password for employee login
 
     # Relationships
@@ -50,6 +48,10 @@ class Material(Base):
     material_quantity_available = Column(Integer, default=0)  # Quantity of material currently available in inventory
     material_out_of_stock_indicator = Column(Boolean, default=False)  # Indicates if the material is out of stock
 
+    # Relationships
+    checkouts = relationship('CheckOut', back_populates='material')  # Links material to its checkouts
+
+
 # CheckIn Table (Source Table for item_transactions)
 class CheckIn(Base):
     __tablename__ = 'check_ins'
@@ -76,7 +78,7 @@ class CheckOut(Base):
     # Relationships
     employee = relationship('Employee', back_populates='checkouts')  # Links check-out to the employee
     tool = relationship('Tool', back_populates='checkouts')  # Links check-out to the tool
-    material = relationship('Material')  # Links check-out to the material
+    material = relationship('Material', back_populates='checkouts')  # Links check-out to the material
 
 
 # ItemInventory Table (Source Table for item_transactions / Front End Table)
