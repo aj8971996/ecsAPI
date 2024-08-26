@@ -134,7 +134,3 @@ def get_lost_tools(db: Session):
 def get_active_checkouts(db: Session):
     active_checkouts = db.query(CheckOut).filter(CheckOut.check_out_date != None).all()
     return active_checkouts
-
-# 7. Get All Out of Stock Materials (Duplicate to #4, consider removing or refactoring)
-def get_all_out_of_stock_materials(db: Session):
-    return get_out_of_stock_materials(db)

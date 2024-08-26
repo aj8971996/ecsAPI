@@ -1,8 +1,12 @@
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ApiClient {
 
@@ -14,22 +18,37 @@ public class ApiClient {
         return postResponse(endpoint, jsonInputString);
     }
 
+    public Map<String, Object> validateEmployeeLoginParsed(String username, String password) throws Exception {
+        String jsonResponse = validateEmployeeLogin(username, password);
+        return parseJsonResponse(jsonResponse);
+    }
+
     public String checkOutItem(int employeeId, Integer toolId, Integer materialId, int quantity) throws Exception {
         String endpoint = BASE_URL + "/checkout";
-        String jsonInputString = "{\"employee_id\": " + employeeId + 
-                                (toolId != null ? ", \"tool_id\": " + toolId : "") + 
-                                (materialId != null ? ", \"material_id\": " + materialId + ", \"quantity\": " + quantity : "") + 
+        String jsonInputString = "{\"employee_id\": " + employeeId +
+                                (toolId != null ? ", \"tool_id\": " + toolId : "") +
+                                (materialId != null ? ", \"material_id\": " + materialId + ", \"quantity\": " + quantity : "") +
                                 "}";
         return postResponse(endpoint, jsonInputString);
     }
 
+    public Map<String, Object> checkOutItemParsed(int employeeId, Integer toolId, Integer materialId, int quantity) throws Exception {
+        String jsonResponse = checkOutItem(employeeId, toolId, materialId, quantity);
+        return parseJsonResponse(jsonResponse);
+    }
+
     public String checkInItem(int employeeId, Integer toolId, Integer materialId, int quantity) throws Exception {
         String endpoint = BASE_URL + "/checkin";
-        String jsonInputString = "{\"employee_id\": " + employeeId + 
-                                (toolId != null ? ", \"tool_id\": " + toolId : "") + 
-                                (materialId != null ? ", \"material_id\": " + materialId + ", \"quantity\": " + quantity : "") + 
+        String jsonInputString = "{\"employee_id\": " + employeeId +
+                                (toolId != null ? ", \"tool_id\": " + toolId : "") +
+                                (materialId != null ? ", \"material_id\": " + materialId + ", \"quantity\": " + quantity : "") +
                                 "}";
         return postResponse(endpoint, jsonInputString);
+    }
+
+    public Map<String, Object> checkInItemParsed(int employeeId, Integer toolId, Integer materialId, int quantity) throws Exception {
+        String jsonResponse = checkInItem(employeeId, toolId, materialId, quantity);
+        return parseJsonResponse(jsonResponse);
     }
 
     public String getOutOfStockMaterials() throws Exception {
@@ -37,14 +56,29 @@ public class ApiClient {
         return getResponse(endpoint);
     }
 
+    public Map<String, Object> getOutOfStockMaterialsParsed() throws Exception {
+        String jsonResponse = getOutOfStockMaterials();
+        return parseJsonResponse(jsonResponse);
+    }
+
     public String getLostTools() throws Exception {
         String endpoint = BASE_URL + "/tools/lost";
         return getResponse(endpoint);
     }
 
+    public Map<String, Object> getLostToolsParsed() throws Exception {
+        String jsonResponse = getLostTools();
+        return parseJsonResponse(jsonResponse);
+    }
+
     public String getActiveCheckouts() throws Exception {
         String endpoint = BASE_URL + "/checkouts/active";
         return getResponse(endpoint);
+    }
+
+    public Map<String, Object> getActiveCheckoutsParsed() throws Exception {
+        String jsonResponse = getActiveCheckouts();
+        return parseJsonResponse(jsonResponse);
     }
 
     private String getResponse(String endpoint) throws Exception {
@@ -78,7 +112,7 @@ public class ApiClient {
 
         try(OutputStream os = connection.getOutputStream()) {
             byte[] input = jsonInputString.getBytes("utf-8");
-            os.write(input, 0, input.length);           
+            os.write(input, 0, input.length);
         }
 
         int responseCode = connection.getResponseCode();
@@ -98,37 +132,15 @@ public class ApiClient {
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            ApiClient apiClient = new ApiClient();
-            
-            // Example usage
-            String loginResponse = apiClient.validateEmployeeLogin("johndoe", "password123");
-            System.out.println("Login Response: " + loginResponse);
+    private Map<String, Object> parseJsonResponse(String jsonResponse) {
+        JSONObject jsonObject = new JSONObject(jsonResponse);
+        Map<String, Object> resultMap = new HashMap<>();
 
-            String checkOutToolResponse = apiClient.checkOutItem(1, 2, null, 0);  // Check out tool (employeeId: 1, toolId: 2)
-            System.out.println("Check Out Tool Response: " + checkOutToolResponse);
-
-            String checkOutMaterialResponse = apiClient.checkOutItem(1, null, 3, 10);  // Check out material (employeeId: 1, materialId: 3, quantity: 10)
-            System.out.println("Check Out Material Response: " + checkOutMaterialResponse);
-
-            String checkInToolResponse = apiClient.checkInItem(1, 2, null, 0);  // Check in tool (employeeId: 1, toolId: 2)
-            System.out.println("Check In Tool Response: " + checkInToolResponse);
-
-            String checkInMaterialResponse = apiClient.checkInItem(1, null, 3, 10);  // Hypothetical return of material (employeeId: 1, materialId: 3, quantity: 10)
-            System.out.println("Check In Material Response: " + checkInMaterialResponse);
-
-            String outOfStockMaterials = apiClient.getOutOfStockMaterials();
-            System.out.println("Out of Stock Materials: " + outOfStockMaterials);
-
-            String lostTools = apiClient.getLostTools();
-            System.out.println("Lost Tools: " + lostTools);
-
-            String activeCheckouts = apiClient.getActiveCheckouts();
-            System.out.println("Active Checkouts: " + activeCheckouts);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (String key : jsonObject.keySet()) {
+            Object value = jsonObject.get(key);
+            resultMap.put(key, value);
         }
+
+        return resultMap;
     }
 }
