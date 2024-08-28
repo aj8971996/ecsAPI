@@ -237,6 +237,7 @@ The apiClient.java class provides several methods to interact with the backend A
    ```
 
    - Mark a Tool as Replaced, this sets the lost indicator back to 0. 
+
 **Example Usage in Main Method**
 ```java
 public static void main(String[] args) {
