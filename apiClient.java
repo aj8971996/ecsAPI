@@ -1,3 +1,5 @@
+package ToolManagementSystem;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -46,6 +48,18 @@ public class ApiClient {
      * 8. POST /tools/lost/{tool_id}
      *    - Function: reportLostTool
      *    - Description: Reports a checked-out tool as lost.
+     * 
+     * [New] 9. POST /refill
+     *    - Function: requestRefill
+     *    - Description: Submits a refill request for a tool or material that is out of stock, lost, or broken.
+     * 
+     * [New] 10. POST /tools/add
+     *    - Function: addNewTool
+     *    - Description: Adds a new tool to the inventory.
+     * 
+     * [New] 11. POST /tools/replaced/{tool_id}
+     *    - Function: markToolAsReplaced
+     *    - Description: Marks a lost tool as replaced (resetting its lost indicator).
      */
 
     public String loginEmployee(String username, String password) throws Exception {
@@ -135,6 +149,42 @@ public class ApiClient {
 
     public Map<String, Object> reportLostToolParsed(int toolId) throws Exception {
         String jsonResponse = reportLostTool(toolId);
+        return parseJsonResponse(jsonResponse);
+    }
+
+    public String requestRefill(int employeeId, int itemId, String requestType) throws Exception {
+        String endpoint = BASE_URL + "/refill";
+        String jsonInputString = "{\"employee_id\": " + employeeId +
+                                ", \"item_id\": " + itemId +
+                                ", \"request_type\": \"" + requestType + "\"}";
+        return postResponse(endpoint, jsonInputString);
+    }
+    
+    public Map<String, Object> requestRefillParsed(int employeeId, int itemId, String requestType) throws Exception {
+        String jsonResponse = requestRefill(employeeId, itemId, requestType);
+        return parseJsonResponse(jsonResponse);
+    }
+
+    // [New] Add new tool
+    public String addNewTool(String toolName, String toolType, float toolCost) throws Exception {
+        String endpoint = BASE_URL + "/tools/add";
+        String jsonInputString = "{\"tool_name\": \"" + toolName + "\", \"tool_type\": \"" + toolType + "\", \"tool_cost\": " + toolCost + "}";
+        return postResponse(endpoint, jsonInputString);
+    }
+
+    public Map<String, Object> addNewToolParsed(String toolName, String toolType, float toolCost) throws Exception {
+        String jsonResponse = addNewTool(toolName, toolType, toolCost);
+        return parseJsonResponse(jsonResponse);
+    }
+
+    // [New] Mark a lost tool as replaced
+    public String markToolAsReplaced(int toolId) throws Exception {
+        String endpoint = BASE_URL + "/tools/replaced/" + toolId;
+        return postResponse(endpoint, "");
+    }
+
+    public Map<String, Object> markToolAsReplacedParsed(int toolId) throws Exception {
+        String jsonResponse = markToolAsReplaced(toolId);
         return parseJsonResponse(jsonResponse);
     }
 

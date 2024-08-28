@@ -1,6 +1,6 @@
-import datetime
-from sqlalchemy import Column, Integer, String, ForeignKey, Date, Boolean, Float, DateTime
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, Boolean, Float, DateTime, and_
+from sqlalchemy.orm import declarative_base, relationship, foreign
+from datetime import datetime
 
 Base = declarative_base()
 
@@ -19,6 +19,8 @@ class Employee(Base):
     # Relationships
     checkouts = relationship('CheckOut', back_populates='employee')  # Links employee to their checkouts
     checkins = relationship('CheckIn', back_populates='employee')  # Links employee to their check-ins
+    transactions = relationship('Transactions', back_populates='employee')  # Links employee to their transactions
+    refill_requests = relationship('RefillRequest', back_populates='employee')  # Links employee to their refill requests
 
 
 # Tool Table (Source Table for item_inventory table)
@@ -35,6 +37,8 @@ class Tool(Base):
     # Relationships
     checkouts = relationship('CheckOut', back_populates='tool')  # Links tool to its checkouts
     checkins = relationship('CheckIn', back_populates='tool')  # Links tool to its check-ins
+    transactions = relationship('Transactions', primaryjoin="Tool.tool_id == foreign(Transactions.transaction_item_id)", back_populates='tool')
+    refill_requests = relationship('RefillRequest', primaryjoin="Tool.tool_id == foreign(RefillRequest.item_id)", back_populates='tool')
 
 # Material Table (Source Table for item_inventory table)
 class Material(Base):
@@ -50,6 +54,8 @@ class Material(Base):
 
     # Relationships
     checkouts = relationship('CheckOut', back_populates='material')  # Links material to its checkouts
+    transactions = relationship('Transactions', primaryjoin="Material.material_id == foreign(Transactions.transaction_item_id)", back_populates='material')
+    refill_requests = relationship('RefillRequest', primaryjoin="Material.material_id == foreign(RefillRequest.item_id)", back_populates='material')
 
 
 # CheckIn Table (Source Table for item_transactions)
@@ -58,7 +64,7 @@ class CheckIn(Base):
     check_in_id = Column(Integer, primary_key=True)  # Unique identifier for each check-in record
     employee_id = Column(Integer, ForeignKey('employees.emp_id'))  # Reference to the employee who returned the tool
     tool_id = Column(Integer, ForeignKey('tools.tool_id'))  # Reference to the tool being returned
-    check_in_date = Column(DateTime, default=datetime.datetime.utcnow)  # Date and time when the tool was returned
+    check_in_date = Column(DateTime, default=datetime.utcnow)  # Date and time when the tool was returned
 
     # Relationships
     employee = relationship('Employee', back_populates='checkins')  # Links check-in to the employee
@@ -72,7 +78,7 @@ class CheckOut(Base):
     employee_id = Column(Integer, ForeignKey('employees.emp_id'))  # Reference to the employee who checked out the item
     tool_id = Column(Integer, ForeignKey('tools.tool_id'), nullable=True)  # Reference to the tool being checked out (nullable if material)
     material_id = Column(Integer, ForeignKey('materials.material_id'), nullable=True)  # Reference to the material being issued (nullable if tool)
-    check_out_date = Column(DateTime, default=datetime.datetime.utcnow)  # Date and time when the item was checked out
+    check_out_date = Column(DateTime, default=datetime.utcnow)  # Date and time when the item was checked out
     quantity_issued = Column(Integer, nullable=True)  # Quantity of material issued (only applicable for materials)
 
     # Relationships
@@ -94,12 +100,32 @@ class ItemInventory(Base):
 # Transactions Table (Front End Table)
 class Transactions(Base):
     __tablename__ = 'item_transactions'
-    transaction_id = Column(Integer, primary_key=True)  # Unique identifier for each transaction record
-    transaction_owner_id = Column(Integer)  # Reference to the employee involved in the transaction
+    transaction_id = Column(Integer, primary_key=True)
+    transaction_owner_id = Column(Integer, ForeignKey('employees.emp_id'))  # Reference to the employee involved in the transaction
     transaction_owner_name = Column(String(100))  # Name of the employee involved in the transaction
-    transaction_item_id = Column(Integer)  # Reference to the item being transacted (from item inventory)
+    transaction_item_id = Column(Integer, nullable=False)  # Reference to the item being transacted (from item inventory)
     transaction_type = Column(String(50))  # Type of transaction (e.g., Tool Check Out, Material Issued)
     transaction_status = Column(String(50))  # Status of the transaction (e.g., Open, Closed)
     transaction_quantity = Column(Integer, nullable=True)  # Quantity of material issued (applicable for material transactions)
     transaction_open_date = Column(Date)  # Date when the transaction was initiated
     transaction_close_date = Column(Date, nullable=True)  # Date when the transaction was closed (nullable if ongoing)
+
+    # Relationships
+    employee = relationship('Employee', back_populates='transactions')
+    tool = relationship('Tool', back_populates='transactions', primaryjoin="Tool.tool_id == foreign(Transactions.transaction_item_id)")
+    material = relationship('Material', back_populates='transactions', primaryjoin="Material.material_id == foreign(Transactions.transaction_item_id)")
+
+# RefillRequest Table
+class RefillRequest(Base):
+    __tablename__ = 'refill_requests'
+    request_id = Column(Integer, primary_key=True)
+    employee_id = Column(Integer, ForeignKey('employees.emp_id'), nullable=False)
+    item_id = Column(Integer, nullable=False)  # This can refer to either a tool or material
+    request_type = Column(String(50), nullable=False)  # 'out_of_stock', 'lost', 'broken'
+    request_status = Column(String(50), default='Pending')  # 'Pending', 'Approved', 'Denied'
+    request_date = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    employee = relationship('Employee', back_populates='refill_requests')
+    tool = relationship('Tool', back_populates='refill_requests', primaryjoin="Tool.tool_id == foreign(RefillRequest.item_id)")
+    material = relationship('Material', back_populates='refill_requests', primaryjoin="Material.material_id == foreign(RefillRequest.item_id)")

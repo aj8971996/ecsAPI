@@ -81,5 +81,25 @@ class TransactionSchema(BaseModel):
     transaction_open_date: date
     transaction_close_date: Optional[date] = None
 
+    # Relationships
+    tool: Optional[ToolSchema] = None  # Added to reflect relationship with Tool
+    material: Optional[MaterialSchema] = None  # Added to reflect relationship with Material
+
+    class Config:
+        orm_mode = True
+
+# New RefillRequestSchema
+class RefillRequestSchema(BaseModel):
+    request_id: int
+    employee_id: int
+    item_id: int
+    request_type: str  # 'out_of_stock', 'lost', 'broken'
+    request_status: str  # 'Pending', 'Approved', 'Denied'
+    request_date: datetime
+
+    # Relationships
+    tool: Optional[ToolSchema] = None  # Added to reflect relationship with Tool
+    material: Optional[MaterialSchema] = None  # Added to reflect relationship with Material
+
     class Config:
         orm_mode = True

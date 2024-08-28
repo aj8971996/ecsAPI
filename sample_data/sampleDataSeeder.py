@@ -1,6 +1,6 @@
 import datetime
 from sqlalchemy.orm import Session
-from database.models import Employee, Tool, Material
+from database.models import Employee, Tool, Material, Transactions, RefillRequest
 
 class SampleDataSeeder:
     def __init__(self, db: Session):
@@ -11,6 +11,8 @@ class SampleDataSeeder:
             self._seed_employees()
             self._seed_tools()
             self._seed_materials()
+            self._seed_transactions()  # Seeding transactions
+            self._seed_refill_requests()  # Seeding refill requests
             self.db.commit()
             print("Data seeding completed successfully.")
         except Exception as e:
@@ -134,6 +136,60 @@ class SampleDataSeeder:
             print(f"Seeded {len(materials)} materials successfully.")
         except Exception as e:
             print(f"Failed to seed materials: {e}")
+            self.db.rollback()
+
+    def _seed_transactions(self):
+        try:
+            transactions = [
+                Transactions(
+                    transaction_owner_id=1,  # John Doe
+                    transaction_owner_name="John Doe",
+                    transaction_item_id=1,  # Hammer (Tool)
+                    transaction_type="Tool Check Out",
+                    transaction_status="Open",
+                    transaction_open_date=datetime.date(2022, 5, 1)
+                ),
+                Transactions(
+                    transaction_owner_id=2,  # Jane Smith
+                    transaction_owner_name="Jane Smith",
+                    transaction_item_id=2,  # Nails (Material)
+                    transaction_type="Material Issued",
+                    transaction_status="Closed",
+                    transaction_quantity=500,
+                    transaction_open_date=datetime.date(2022, 6, 15),
+                    transaction_close_date=datetime.date(2022, 6, 20)
+                ),
+            ]
+            self.db.add_all(transactions)
+            self.db.commit()  # Commit after seeding transactions
+            print(f"Seeded {len(transactions)} transactions successfully.")
+        except Exception as e:
+            print(f"Failed to seed transactions: {e}")
+            self.db.rollback()
+
+    def _seed_refill_requests(self):
+        try:
+            refill_requests = [
+                RefillRequest(
+                    employee_id=1,  # John Doe
+                    item_id=1,  # Hammer (Tool)
+                    request_type="lost",
+                    request_status="Pending",
+                    request_date=datetime.datetime.utcnow()
+                ),
+                RefillRequest(
+                    employee_id=2,  # Jane Smith
+                    item_id=3,  # Copper Wire (Material)
+                    request_type="out_of_stock",
+                    request_status="Approved",
+                    request_date=datetime.datetime.utcnow()
+                ),
+            ]
+            self.db.add_all(refill_requests)
+            self.db.commit()  # Commit after seeding refill requests
+            print(f"Seeded {len(refill_requests)} refill requests successfully.")
+        except Exception as e:
+            print(f"Failed to seed refill requests: {e}")
             self.db.rollback()
 
 # Usage example:

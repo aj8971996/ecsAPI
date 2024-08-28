@@ -1,5 +1,5 @@
 import datetime
-from database.models import Employee, Tool, Material, CheckOut, CheckIn, Transactions
+from database.models import Employee, Tool, Material, CheckOut, CheckIn, Transactions, RefillRequest
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from sqlalchemy import and_, or_
@@ -168,3 +168,47 @@ def mark_tool_as_lost(db: Session, tool_id: int):
     tool.tool_lost_indicator = True  # Set the lost indicator to True
     db.commit()
     return {"message": "Tool marked as lost"}
+
+# 9. Refill Tool
+def refill_tool(db: Session, employee_id: int, item_id: int, request_type: str):
+    # Ensure request_type is valid
+    if request_type not in ['out_of_stock', 'lost', 'broken']:
+        raise HTTPException(status_code=400, detail="Invalid request type")
+
+    # Create a new refill request
+    new_request = RefillRequest(
+        employee_id=employee_id,
+        item_id=item_id,
+        request_type=request_type
+    )
+    db.add(new_request)
+    db.commit()
+    return {"message": "Refill request submitted successfully"}
+
+# 10. Function to retrieve all refill requests
+def get_all_refill_requests(db: Session):
+    return db.query(RefillRequest).all()
+
+# 11. Add New Tool
+def add_new_tool(db: Session, tool_name: str, tool_type: str, tool_cost: float):
+    new_tool = Tool(
+        tool_name=tool_name,
+        tool_type=tool_type,
+        tool_added_to_inventory_date=datetime.datetime.utcnow(),
+        tool_cost=tool_cost,
+        tool_lost_indicator=False,
+        tool_out_of_stock_indicator=False
+    )
+    db.add(new_tool)
+    db.commit()
+    return {"message": "New tool added successfully"}
+
+# 12. Mark Lost Tool as Replaced
+def mark_tool_as_replaced(db: Session, tool_id: int):
+    tool = db.query(Tool).filter(Tool.tool_id == tool_id).first()
+    if not tool:
+        raise HTTPException(status_code=404, detail="Tool not found")
+    
+    tool.tool_lost_indicator = False  # Reset the lost indicator
+    db.commit()
+    return {"message": "Tool marked as replaced (not lost)"}
